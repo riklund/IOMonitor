@@ -45,7 +45,7 @@ do
 
 	if [ $oldRead -gt 0 ]
 	then
-		printf 'Read: %-15s Write: %-15s\n' "`printf "%.2f Mb" $readDiff`" "`printf "%.2f Mb" $writeDiff`"
+		printf 'Read: %-15s Write: %-15s\n' "`printf "%.2f Mb/s" $readDiff`" "`printf "%.2f Mb/s" $writeDiff`"
 	fi
 
 	sleep 1
