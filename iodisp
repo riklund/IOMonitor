@@ -1,0 +1,54 @@
+#!/bin/bash
+
+if [ $# != 1 ]
+then
+	echo "Usage: iodisp PID";
+	exit 1
+fi
+
+name="/proc/$1/io"
+
+oldRead=0
+oldWrite=0
+
+while [ true ]
+do
+
+	if ! [[ -f $name ]]
+	then
+		echo "Process ID not found."
+		exit 2
+	fi
+
+	if [[ `ls -l $name | awk '{ print $3 }'` != `whoami` ]]
+	then
+		echo "You can only look at your own processes."
+		exit 3
+	fi
+
+	byteRead=`sed -n -e 's_\(rchar: \)\([0-9]*\)_\2_p' $name 2>/dev/null`
+	if [ $? -ne 0 ]
+	then
+		echo "Error when reading input."
+		exit 12
+	fi
+
+	byteWrite=`sed -n -e 's_\(wchar: \)\([0-9]*\)_\2_p' $name 2>/dev/null`
+	if [ $? -ne 0 ]
+	then
+		echo "Error when writing output."
+		exit 13
+	fi
+	
+	readDiff=`echo "($byteRead - $oldRead)/1024.0/1024.0" | bc -l`
+	writeDiff=`echo "($byteWrite - $oldWrite)/1024.0/1024.0" | bc -l`
+
+	if [ $oldRead -gt 0 ]
+	then
+		printf 'Read: %-15s Write: %-15s\n' "`printf "%.2f Mb" $readDiff`" "`printf "%.2f Mb" $writeDiff`"
+	fi
+
+	sleep 1
+	oldRead=$byteRead
+	oldWrite=$byteWrite
+done
