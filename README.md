@@ -8,6 +8,8 @@ Copy the script files to a directory in your $PATH.
 
 ##Usage
 
+To monitor a process, issue 
+
 ```bash
 iodisp PID
 ```
