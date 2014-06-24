@@ -10,7 +10,7 @@ while [ true ]
 do
    sleep 1
    myPID=`pgrep $1`
-   echo "Locking to " $myPID
+   echo "Locking to process ID $myPID."
    if [ `echo $myPID | wc -w` -eq 1 ]
    then 
 	   iodisp $myPID
